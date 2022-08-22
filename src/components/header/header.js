@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { BsSuitHeart, BsSearch } from 'react-icons/bs';
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 import { useUserContext } from "../../context/userContext";
+import { useSelector } from 'react-redux';
 
 
 const Header = () => {
@@ -12,6 +13,8 @@ const Header = () => {
     useEffect(() => {
         console.log(users);
     }, [users])
+    const counter = useSelector((state) => { return state.fav.favProducts})
+
     return (
         <>
             {/* Topnav */}
@@ -41,7 +44,7 @@ const Header = () => {
                         <Link to="/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/H%26M-Logo.svg/640px-H%26M-Logo.svg.png" title='h&m egypt' height="50px;" /></Link>
                     </div>
                     <div className="col-5 d-flex justify-content-end">
-                        <Link to="/fav" className='text-dark'><BsSuitHeart style={{ width: "40px", height: "40px", marginRight: "20px" }} /></Link>
+                    <Link to="/fav" className='text-dark'><BsSuitHeart style={{ width: "40px", height: "40px", marginRight: "20px" }} />{counter.length ? <span class="count"> {counter.length}</span> : ""}</Link>
                         <Link to="/basket" className='text-dark'> <HiOutlineShoppingBag style={{ width: "40px", height: "40px" }} /></Link>
                     </div>
                 </div>

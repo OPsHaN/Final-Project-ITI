@@ -2,8 +2,10 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import './kids.css';
 import { Link } from 'react-router-dom';
-
-
+import { useSelector } from 'react-redux';
+import { useDispatch } from "react-redux";
+import addFavourit from '../../components/store/actions/fav';
+import {AiOutlineHeart} from 'react-icons/ai';
 import { getProducts } from '../../firebase/products';
 import { Card } from '../../components/card/card';
 
@@ -19,6 +21,25 @@ const Kids = () => {
         prdlist();
     }, [])
     console.log(products)
+
+
+        // add favorite product
+
+
+        const dispatch = useDispatch();
+        const f = useSelector((state) => { return state.fav.favProducts})
+        const [favMenu, setfavMenu] = useState(f);
+    
+        const addFavorite = (productid, productname, productprice) => {
+            let favProduct = { id: productid, name: productname, price: productprice };
+            if (favMenu.some(fav => fav.id == favProduct.id)) {
+                setfavMenu(favMenu.filter(f => f.name != favProduct.name))
+            }
+            else {
+                setfavMenu(favMenu.concat(favProduct))
+            }
+        }
+        dispatch(addFavourit(favMenu));
 
     return (
         <>
@@ -44,13 +65,28 @@ const Kids = () => {
                             {products.map((prd) => {
                                 return (
                                    <>
-                                   <Card key={prd.id} prd={prd}
-                                   name = {prd.name}
-                                   price = {prd.price}
-                                   id = {prd.id}
-                                   cat={prd.cat}
-                                   img = {'https://eg.hm.com/sites/g/files/hm/styles/product_zoom_medium_606x504/brand/assets-shared/HNM/13605623/e1d56f3f60c0fac7bda5b824b04425ff75ccfa0f/1/e1d56f3f60c0fac7bda5b824b04425ff75ccfa0f.jpg?itok=7J0gxMyc'}
-                                   />
+<div class="col-md-3 py-2">
+        <div class="card-sl">
+            <div class="card-image">
+                <img
+                    src="https://i.pinimg.com/originals/46/71/80/4671800b2966c2d08f8cff837e467431.jpg" />
+            </div>
+            <a class="card-action" >
+                <button className=
+                {`btn btn-warning${favMenu.some(i => i.id == prd.id) ? 'btn btn-danger' : 'btn btn-warning'}`}
+                 onClick={() => addFavorite(prd.id,prd.name, prd.price)}><AiOutlineHeart style={{width:"25px",height:"30px"}}/></button></a>
+            <div class="card-heading">
+            {prd.name}
+            </div>
+            <div class="card-text">
+            {prd.price}
+               </div>
+               <a href="#"  class="card-button">Add To Cart</a>
+
+               {/* <Link to={`/details/${prd.id}`} key={prd.id}><a href="/" class="card-button">Add To Cart</a></Link> */}
+        </div>
+    </div>
+
                                    </>
                                 );
                             })}
